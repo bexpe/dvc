@@ -106,6 +106,22 @@ function goToCheckout() {
     window.location.href = "checkout.html";
 }
 
+function togglePaczkomat() {
+    const delivery = document.getElementById("delivery").value;
+    const paczkomatSelect = document.getElementById("paczkomat");
+    const addressInput = document.getElementById("address");
+
+    if (delivery === "paczkomat") {
+        paczkomatSelect.style.display = "block";
+        paczkomatSelect.required = true;
+        addressInput.required = false;
+    } else {
+        paczkomatSelect.style.display = "none";
+        paczkomatSelect.required = false;
+        addressInput.required = true;
+    }
+}
+
 // start
 renderProducts();
 updateEverything();

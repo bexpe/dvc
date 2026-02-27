@@ -19,26 +19,28 @@
 
 <script>
 const order = JSON.parse(localStorage.getItem("lastOrder"));
-
 const summary = document.getElementById("order-summary");
 
 if (order) {
-    let totalBrutto = order.totalBrutto || 0;
-    let net = totalBrutto / 1.23;
-    let vat = totalBrutto - net;
+    const totalBrutto = order.totalBrutto || 0;
+    const net = totalBrutto / 1.23;
+    const vat = totalBrutto - net;
 
+    // Budujemy HTML dynamicznie
     summary.innerHTML = `
-        <p><strong>Imię:</strong> ${order.name}</p>
+        <p><strong>Imię i nazwisko:</strong> ${order.name}</p>
         <p><strong>Email:</strong> ${order.email}</p>
         <p><strong>Dostawa:</strong> ${order.delivery}</p>
         ${
             order.delivery === "paczkomat"
             ? `<p><strong>Paczkomat:</strong> ${order.paczkomat}</p>`
-            : `<p><strong>Adres:</strong> ${order.address}</p>`
+            : `<p><strong>Adres dostawy:</strong> ${order.address}</p>`
         }
         <hr>
         <h3>Produkty:</h3>
-        ${order.cart.map(item => `<p>${item.name} x${item.quantity} (${item.price.toFixed(2)} zł)</p>`).join("")}
+        ${order.cart.map(item => `
+            <p>${item.name} x${item.quantity} (${item.price.toFixed(2)} zł)</p>
+        `).join("")}
         <hr>
         <p><strong>Netto:</strong> ${net.toFixed(2)} zł</p>
         <p><strong>VAT (23%):</strong> ${vat.toFixed(2)} zł</p>

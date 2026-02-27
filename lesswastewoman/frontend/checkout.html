@@ -22,9 +22,14 @@
             <option value="paczkomat">Paczkomat</option>
         </select>
 
-        <input type="text" id="paczkomat" 
-               placeholder="Kod paczkomatu (np. WAW01A)" 
-               style="display:none; margin-top:10px;">
+        <select id="paczkomat" style="display:none; margin-top:10px;" required>
+            <option value="">Wybierz paczkomat</option>
+            <option value="WAW01A">WAW01A – Warszawa, ul. Marszałkowska</option>
+            <option value="KRK02B">KRK02B – Kraków, ul. Floriańska</option>
+            <option value="GDA03C">GDA03C – Gdańsk, ul. Długa</option>
+            <option value="POZ04D">POZ04D – Poznań, ul. Święty Marcin</option>
+            <option value="WRO05E">WRO05E – Wrocław, ul. Świdnicka</option>
+        </select>
 
         <button type="submit">Złóż zamówienie</button>
     </form>
