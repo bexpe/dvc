@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="checkout-page">
+    <h1>Finalizacja zamówienia 💳</h1>
+
+    <form id="order-form">
+        <input type="text" id="name" placeholder="Imię i nazwisko" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="address" placeholder="Adres dostawy">
+
+        <label style="margin-top:15px; display:block;">Metoda dostawy:</label>
+        <select id="delivery" onchange="togglePaczkomat()" required>
+            <option value="">Wybierz dostawę</option>
+            <option value="kurier">Kurier</option>
+            <option value="paczkomat">Paczkomat</option>
+        </select>
+
+        <input type="text" id="paczkomat" 
+               placeholder="Kod paczkomatu (np. WAW01A)" 
+               style="display:none; margin-top:10px;">
+
+        <button type="submit">Złóż zamówienie</button>
+    </form>
+</div>
+
+<script>
+function togglePaczkomat() {
+    const delivery = document.getElementById("delivery").value;
+    const paczkomatInput = document.getElementById("paczkomat");
+
+    if (delivery === "paczkomat") {
+        paczkomatInput.style.display = "block";
+        paczkomatInput.required = true;
+        document.getElementById("address").required = false;
+    } else {
+        paczkomatInput.style.display = "none";
+        paczkomatInput.required = false;
+        document.getElementById("address").required = true;
+    }
+}
+
+const form = document.getElementById("order-form");
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let totalBrutto = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const orderData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        delivery: document.getElementById("delivery").value,
+        paczkomat: document.getElementById("paczkomat").value,
+        cart: cart,
+        totalBrutto: totalBrutto
+    };
+
+    localStorage.setItem("lastOrder", JSON.stringify(orderData));
+    localStorage.removeItem("cart");
+
+    window.location.href = "thankyou.html";
+});
+</script>
+
+</body>
+</html>

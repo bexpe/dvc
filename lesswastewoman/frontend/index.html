@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesswastewoman</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>🌸 Lesswastewoman</h1>
+    <div class="cart-icon" onclick="toggleCart()">
+        🛒 <span id="cart-count">0</span>
+    </div>
+</header>
+
+<main>
+    <div class="products" id="products"></div>
+</main>
+
+<div class="cart-sidebar" id="cart">
+    <h2>Twój Koszyk</h2>
+    <div id="cart-items"></div>
+
+    <div class="summary">
+        <p>Netto: <span id="subtotal">0</span> zł</p>
+        <p>VAT (23%): <span id="vat">0</span> zł</p>
+        <h3>Razem: <span id="total">0</span> zł</h3>
+    </div>
+
+    <button class="checkout" onclick="goToCheckout()">Przejdź do płatności</button>
+    <button class="clear" onclick="clearCart()">Wyczyść koszyk</button>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>
