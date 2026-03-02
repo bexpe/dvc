@@ -1,7 +1,8 @@
 const products = [
-    { id: 1, name: "Floral Basic", price: 129, img: "https://picsum.photos/300?1" },
-    { id: 2, name: "Bloom Hoodie", price: 149, img: "https://picsum.photos/300?2" },
-    { id: 3, name: "Pastel Crewneck", price: 119, img: "https://picsum.photos/300?3" }
+    { id: 1, name: "Bluza Basic", price: 119, img: "images/basic.webp" },
+    { id: 2, name: "Bluza Floral ", price: 119, img: "images/floral.webp" },
+    { id: 3, name: "Bluza Natural", price: 119, img: "images/natural.webp" },
+    { id: 4, name: "Bluza Pastel", price: 149, img: "images/pastel.webp" }
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];

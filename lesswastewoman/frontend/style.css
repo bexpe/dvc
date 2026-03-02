@@ -118,7 +118,7 @@ button {
     margin-top: 10px;
 }
 
-.checkout-page {
+.checkout-page, .thankyou-page {
     max-width: 400px;
     margin: 100px auto;
     background: white;
@@ -128,7 +128,7 @@ button {
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-.checkout-page input {
+.checkout-page input, .thankyou-page input {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
@@ -136,7 +136,7 @@ button {
     border: 1px solid #ddd;
 }
 
-.checkout-page button {
+.checkout-page button, .thankyou-page button {
     width: 100%;
     margin-top: 15px;
     background: #cdb4db;

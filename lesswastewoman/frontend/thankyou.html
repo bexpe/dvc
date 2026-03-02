@@ -1,52 +1,138 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>Dziękujemy</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Dziękujemy za zamówienie</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- Leaflet CSS i JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 </head>
 <body>
 
-<div class="checkout-page">
-    <h1>🌸 Dziękujemy za zamówienie!</h1>
+<div class="thankyou-page">
+<h1>🎉 Dziękujemy za zamówienie!</h1>
 
-    <div id="order-summary"></div>
+<div id="order-summary"></div>
+<!-- Przycisk pokazujący popup mapy -->
+<button id="show-map" style="margin-top:15px; display:none;">Pokaż paczkomat na mapie</button>
 
-    <a href="index.html">
-        <button>Wróć do sklepu</button>
-    </a>
+<!-- Popup -->
+<div id="map-popup" style="
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:400px;
+    height:300px;
+    background:white;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.5);
+    z-index:1000;
+">
+    <div id="popup-map" style="width:100%; height:100%; border-radius:15px;"></div>
+    <button onclick="closeMap()" style="position:absolute; top:5px; right:5px;">✖ Zamknij</button>
 </div>
 
-<script>
-const order = JSON.parse(localStorage.getItem("lastOrder"));
-const summary = document.getElementById("order-summary");
+<!-- Kontener mapy paczkomatu -->
 
-if (order) {
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const order = JSON.parse(localStorage.getItem("lastOrder"));
+    const summary = document.getElementById("order-summary");
+
+    if(!order){
+        summary.innerHTML = "<p>Brak danych zamówienia.</p>";
+        return;
+    }
+
     const totalBrutto = order.totalBrutto || 0;
     const net = totalBrutto / 1.23;
     const vat = totalBrutto - net;
 
-    // Budujemy HTML dynamicznie
     summary.innerHTML = `
         <p><strong>Imię i nazwisko:</strong> ${order.name}</p>
         <p><strong>Email:</strong> ${order.email}</p>
-        <p><strong>Dostawa:</strong> ${order.delivery}</p>
-        ${
-            order.delivery === "paczkomat"
-            ? `<p><strong>Paczkomat:</strong> ${order.paczkomat}</p>`
-            : `<p><strong>Adres dostawy:</strong> ${order.address}</p>`
-        }
+        <p><strong>Metoda dostawy:</strong> ${order.delivery}</p>
+        ${order.delivery==="paczkomat"? `<p><strong>Paczkomat:</strong> ${order.paczkomat}</p>` : `<p><strong>Adres dostawy:</strong> ${order.address}</p>`}
         <hr>
         <h3>Produkty:</h3>
-        ${order.cart.map(item => `
-            <p>${item.name} x${item.quantity} (${item.price.toFixed(2)} zł)</p>
-        `).join("")}
+        ${order.cart.map(item=>`<p>${item.name} x${item.quantity} (${item.price.toFixed(2)} zł)</p>`).join("")}
         <hr>
         <p><strong>Netto:</strong> ${net.toFixed(2)} zł</p>
         <p><strong>VAT (23%):</strong> ${vat.toFixed(2)} zł</p>
         <h3><strong>Razem (brutto):</strong> ${totalBrutto.toFixed(2)} zł</h3>
     `;
+
+    // Jeśli wybrano paczkomat – pokaż mapkę
+    if(order.delivery==="paczkomat" && order.paczkomat){
+        const paczkomaty = {
+            "WAW01A":[52.2297, 21.0122],
+            "KRK02B":[50.0614, 19.9372],
+            "GDA03C":[54.3520, 18.6466],
+            "POZ04D":[52.4064, 16.9252],
+            "WRO05E":[51.1079, 17.0385]
+        };
+        const coords = paczkomaty[order.paczkomat];
+        if(coords){
+            document.getElementById("leaflet-map").style.display="block";
+            const map = L.map("leaflet-map").setView(coords, 14);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors",
+            }).addTo(map);
+
+            const marker = L.marker(coords).addTo(map);
+            marker.bindPopup(`${order.paczkomat}`).openPopup();
+        }
+    }
 }
+);
+</script>
+<script>
+function closeMap(){
+    document.getElementById("map-popup").style.display="none";
+}
+
+// Pokaz popup i inicjalizuj mapę
+document.getElementById("show-map").addEventListener("click", function(){
+    document.getElementById("map-popup").style.display="block";
+
+    const order = JSON.parse(localStorage.getItem("lastOrder"));
+    if(order && order.delivery==="paczkomat" && order.paczkomat){
+        const paczkomaty = {
+            "WAW01A":[52.2297, 21.0122],
+            "KRK02B":[50.0614, 19.9372],
+            "GDA03C":[54.3520, 18.6466],
+            "POZ04D":[52.4064, 16.9252],
+            "WRO05E":[51.1079, 17.0385]
+        };
+        const coords = paczkomaty[order.paczkomat];
+
+        // Tworzymy mapę tylko raz
+        if(!window.popupMap){
+            window.popupMap = L.map("popup-map").setView(coords, 14);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors",
+            }).addTo(window.popupMap);
+            L.marker(coords).addTo(window.popupMap)
+                .bindPopup(`${order.paczkomat}`).openPopup();
+        } else {
+            window.popupMap.setView(coords, 14);
+        }
+    }
+});
+
+// Pokaż przycisk tylko jeśli paczkomat
+document.addEventListener("DOMContentLoaded", function(){
+    const order = JSON.parse(localStorage.getItem("lastOrder"));
+    if(order && order.delivery==="paczkomat"){
+        document.getElementById("show-map").style.display="inline-block";
+    }
+});
 </script>
 
 </body>
